@@ -13,6 +13,6 @@ public class TestDoWhile {
         do{
             System.out.println(1);
         }while (false);
-//        System.out.println(2);
+        System.out.println(2);
     }
 }
