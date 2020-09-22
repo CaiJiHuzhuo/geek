@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.wzp.study.LearnJdk</groupId>
+    <groupId>com.wzp.study</groupId>
     <artifactId>LearnJdk</artifactId>
 
 
