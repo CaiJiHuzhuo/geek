@@ -2,6 +2,7 @@ package com.wzp.study.sentinel.sentinelNoweb;
 
 import com.alibaba.csp.sentinel.Entry;
 import com.alibaba.csp.sentinel.SphU;
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.csp.sentinel.slots.block.RuleConstant;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
@@ -12,9 +13,14 @@ import java.util.List;
 
 public class SentinelNoWeb {
     public static void main(String[] args) {
+        sentinelTest01();
+
+    }
+
+    private static void sentinelTest01() {
         initFlowRules();
         int i = 0;
-        do {
+        while (true) {
             Entry entry = null;
             try {
                 entry = SphU.entry("HelloWorld");
@@ -28,11 +34,27 @@ public class SentinelNoWeb {
             }
             i++;
 
-        } while (
-                i < 30
-        );
-
+        }
     }
+
+    private static void sentinelTest02() {
+        initFlowRules();
+        int i = 0;
+        while (true) {
+            try (Entry entry = SphU.entry("HelloWorld");) {
+                System.out.println("hello world");
+            } catch (BlockException e) {
+                System.out.println("block");
+            }
+            i++;
+        }
+    }
+
+//    @SentinelResource
+//    public void sentinelTest03() {
+//        System.out.println("hello world");
+//    }
+
 
     private static void initFlowRules() {
         List<FlowRule> rules = new ArrayList<>();
