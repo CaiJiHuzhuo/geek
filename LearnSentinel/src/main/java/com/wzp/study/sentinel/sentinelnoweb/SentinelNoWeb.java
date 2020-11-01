@@ -1,9 +1,7 @@
-package com.wzp.study.sentinel.sentinelNoweb;
+package com.wzp.study.sentinel.sentinelnoweb;
 
-import com.alibaba.csp.sentinel.AsyncEntry;
 import com.alibaba.csp.sentinel.Entry;
 import com.alibaba.csp.sentinel.SphU;
-import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.csp.sentinel.slots.block.RuleConstant;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
@@ -12,6 +10,9 @@ import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author admin
+ */
 public class SentinelNoWeb {
     public static void main(String[] args) {
         sentinelTest01();

@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.wzp.study</groupId>
-	<artifactId>sentinel</artifactId>
+	<artifactId>LearnSentinel</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>sentinel</name>
+	<name>LearnSentinel</name>
 	<description>Demo project for Sentinel</description>
 
 	<properties>
