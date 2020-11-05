@@ -27,11 +27,9 @@ public class IntIntegerCompare {
         System.out.println(i == it);
         System.out.println(i == it1);
 
-
         Integer it2 = new Integer(180);
         Integer it3 = new Integer(180);
         System.out.println(it2 == it3);
-
 
         Integer it4 = new Integer(100);
         Integer it5 = new Integer(100);

@@ -14,6 +14,7 @@
         <module>LearnSpring</module>
         <module>LearnGson</module>
         <module>LearnSentinel</module>
+        <module>LearnEjob</module>
     </modules>
 
     <dependencies>

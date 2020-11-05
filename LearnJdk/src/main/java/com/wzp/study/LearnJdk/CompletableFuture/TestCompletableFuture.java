@@ -1,6 +1,5 @@
 package com.wzp.study.LearnJdk.CompletableFuture;
 
-
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ public class TestCompletableFuture {
     }
 
     @Test
-    public void testPrice(){
+    public void testPrice() {
         Shop shop = new Shop();
         long start = System.nanoTime();
         Future<Double> futurePrice = shop.getPriceAsync("my favorite product");
@@ -32,7 +31,7 @@ public class TestCompletableFuture {
         try {
             double price = futurePrice.get();
             double price1 = futureprice1.join();
-            System.out.println("Price "+price+ "  Price1 "+ price1 );
+            System.out.println("Price " + price + "  Price1 " + price1);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -44,16 +43,15 @@ public class TestCompletableFuture {
     }
 
     @Test
-    public void findPrices(String product){
+    public void findPrices(String product) {
         List<CompletableFuture<String>> priceFuture = shops.stream()
-                .map(shop -> CompletableFuture.supplyAsync(() -> shop.getPrice1(product),Shop.executor))
-                .map(future -> future.thenApply(Quote::parse))
-                .map(future -> future.thenCompose(quote -> CompletableFuture.supplyAsync(() -> Discount.applyDiscount(quote), Shop.executor)))
-                .collect(Collectors.toList());
+            .map(shop -> CompletableFuture.supplyAsync(() -> shop.getPrice1(product), Shop.executor))
+            .map(future -> future.thenApply(Quote::parse)).map(future -> future.thenCompose(
+                quote -> CompletableFuture.supplyAsync(() -> Discount.applyDiscount(quote), Shop.executor)))
+            .collect(Collectors.toList());
 
         List<String> priceList = priceFuture.stream().map(CompletableFuture::join).collect(Collectors.toList());
         System.out.println(priceList);
     }
-
 
 }

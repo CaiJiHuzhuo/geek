@@ -24,7 +24,7 @@ public class FactoryBeanLearn implements FactoryBean<FactoryBeanService> {
     }
 
     @Test
-    public void test(){
+    public void test() {
         ClassPathXmlApplicationContext apac = new ClassPathXmlApplicationContext("classpath:ApplicationContext.xml");
         apac.start();
         apac.getBean(FactoryBeanService.class);

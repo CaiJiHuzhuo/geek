@@ -52,30 +52,29 @@ public class SentinelNoWeb {
         }
     }
 
-//    @SentinelResource
-//    public void sentinelTest03() {
-//        System.out.println("hello world");
-//    }
-
+    //    @SentinelResource
+    //    public void sentinelTest03() {
+    //        System.out.println("hello world");
+    //    }
 
     private static void sentinelTest03() {
         initFlowRules();
-//        try {
-//            AsyncEntry entry = SphU.asyncEntry("HelloWorld");
-//
-//            // 异步调用.
-//            doAsync(userId, result -> {
-//                try {
-//                    // 在此处处理异步调用的结果.
-//                } finally {
-//                    // 在回调结束后 exit.
-//                    entry.exit();
-//                }
-//            });
-//        } catch (BlockException ex) {
-//            // Request blocked.
-//            // Handle the exception (e.g. retry or fallback).
-//        }
+        //        try {
+        //            AsyncEntry entry = SphU.asyncEntry("HelloWorld");
+        //
+        //            // 异步调用.
+        //            doAsync(userId, result -> {
+        //                try {
+        //                    // 在此处处理异步调用的结果.
+        //                } finally {
+        //                    // 在回调结束后 exit.
+        //                    entry.exit();
+        //                }
+        //            });
+        //        } catch (BlockException ex) {
+        //            // Request blocked.
+        //            // Handle the exception (e.g. retry or fallback).
+        //        }
     }
 
     private static void initFlowRules() {

@@ -10,9 +10,9 @@ public class TestDoWhile {
 
     //奇葩写法测试
     public static void main(String[] args) {
-        do{
+        do {
             System.out.println(1);
-        }while (false);
+        } while (false);
         System.out.println(2);
     }
 }

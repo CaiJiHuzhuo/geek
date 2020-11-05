@@ -72,13 +72,12 @@ public class TestHashMap {
         }*/
 
         //put 1.1
-//        private static int roundUpToPowerOf2(int number) {
-//            // assert number >= 0 : "number must be non-negative";
-//            return number >= MAXIMUM_CAPACITY
-//                    ? MAXIMUM_CAPACITY
-//                    : (number > 1) ? Integer.highestOneBit((number - 1) << 1) : 1;
-//        }
-
+        //        private static int roundUpToPowerOf2(int number) {
+        //            // assert number >= 0 : "number must be non-negative";
+        //            return number >= MAXIMUM_CAPACITY
+        //                    ? MAXIMUM_CAPACITY
+        //                    : (number > 1) ? Integer.highestOneBit((number - 1) << 1) : 1;
+        //        }
 
         //put 2
         //扰动函数，这是一个神奇的函数，用了很多的异或，移位等运算，对key的hashcode进一步进行计算以及二进制位的调整等来保证最终获取的存储位置尽量分布均匀
@@ -101,76 +100,71 @@ public class TestHashMap {
         }*/
 
         //put 4
-//        快速失败机制，当循环中使用hashmap.remove()删除元素时，会报异常
-//        比如在并发情况下，一个线程在循环遍历，一个线程循环添加，会导致线程安全问题，
-//        每次修改会导致modCount++
-//        所以hashmap在遍历时底层迭代器首先会expectedModCount = modCount;
-//        然后在每次next时会比较
-//        if (modCount != expectedModCount)
-//            throw new ConcurrentModificationException();
+        //        快速失败机制，当循环中使用hashmap.remove()删除元素时，会报异常
+        //        比如在并发情况下，一个线程在循环遍历，一个线程循环添加，会导致线程安全问题，
+        //        每次修改会导致modCount++
+        //        所以hashmap在遍历时底层迭代器首先会expectedModCount = modCount;
+        //        然后在每次next时会比较
+        //        if (modCount != expectedModCount)
+        //            throw new ConcurrentModificationException();
 
         //put 5
-//        void addEntry(int hash, K key, V value, int bucketIndex) {
-              //resize1 两个条件
-//            if ((size >= threshold) && (null != table[bucketIndex])) {
-                  //resize2
-//                resize(2 * table.length);//当size超过临界阈值threshold，并且即将发生哈希冲突时进行扩容
-//                hash = (null != key) ? hash(key) : 0;
-//                bucketIndex = indexFor(hash, table.length);
-//            }
-//            头插法
-              //put 5.1
-//            createEntry(hash, key, value, bucketIndex);
-//        }
+        //        void addEntry(int hash, K key, V value, int bucketIndex) {
+        //resize1 两个条件
+        //            if ((size >= threshold) && (null != table[bucketIndex])) {
+        //resize2
+        //                resize(2 * table.length);//当size超过临界阈值threshold，并且即将发生哈希冲突时进行扩容
+        //                hash = (null != key) ? hash(key) : 0;
+        //                bucketIndex = indexFor(hash, table.length);
+        //            }
+        //            头插法
+        //put 5.1
+        //            createEntry(hash, key, value, bucketIndex);
+        //        }
 
-          //put 5.1
+        //put 5.1
         //先取出index位置上的元素，然后新建一个链表的头元素，next为原先的元素，再把新元素放到数组的位置
-//        void createEntry(int hash, K key, V value, int bucketIndex) {
-//            Entry<K,V> e = table[bucketIndex];
-//            table[bucketIndex] = new Entry<>(hash, key, value, e);
-//            size++;
-//        }
+        //        void createEntry(int hash, K key, V value, int bucketIndex) {
+        //            Entry<K,V> e = table[bucketIndex];
+        //            table[bucketIndex] = new Entry<>(hash, key, value, e);
+        //            size++;
+        //        }
 
         //resize2
-//        void resize(int newCapacity) {
-//            Entry[] oldTable = table;//老的数据
-//            int oldCapacity = oldTable.length;//获取老的容量值
-//            if (oldCapacity == MAXIMUM_CAPACITY) {//老的容量值已经到了最大容量值
-//                threshold = Integer.MAX_VALUE;//修改扩容阀值
-//                return;
-//            }
-//            //新的结构
-//            Entry[] newTable = new Entry[newCapacity];
-            //resize 2.1
-            //initHashSeedAsNeeded(newCapacity) 是否需要重新计算hash值
-//            transfer(newTable, initHashSeedAsNeeded(newCapacity));//将老的表中的数据拷贝到新的结构中
-//            table = newTable;//修改HashMap的底层数组
-//            threshold = (int)Math.min(newCapacity * loadFactor, MAXIMUM_CAPACITY + 1);//修改阀值
-//        }
+        //        void resize(int newCapacity) {
+        //            Entry[] oldTable = table;//老的数据
+        //            int oldCapacity = oldTable.length;//获取老的容量值
+        //            if (oldCapacity == MAXIMUM_CAPACITY) {//老的容量值已经到了最大容量值
+        //                threshold = Integer.MAX_VALUE;//修改扩容阀值
+        //                return;
+        //            }
+        //            //新的结构
+        //            Entry[] newTable = new Entry[newCapacity];
+        //resize 2.1
+        //initHashSeedAsNeeded(newCapacity) 是否需要重新计算hash值
+        //            transfer(newTable, initHashSeedAsNeeded(newCapacity));//将老的表中的数据拷贝到新的结构中
+        //            table = newTable;//修改HashMap的底层数组
+        //            threshold = (int)Math.min(newCapacity * loadFactor, MAXIMUM_CAPACITY + 1);//修改阀值
+        //        }
 
+        //        void transfer(Entry[] newTable, boolean rehash) {
+        //            int newCapacity = newTable.length;//容量
+        //            for (Entry<K,V> e : table) { //遍历所有桶
+        //                while(null != e) {  //遍历桶中所有元素（是一个链表）
+        //                    Entry<K,V> next = e.next;
+        //                    if (rehash) {//如果是重新Hash，则需要重新计算hash值
+        //                        e.hash = null == e.key ? 0 : hash(e.key);
+        //                    }
+        //                    int i = indexFor(e.hash, newCapacity);//定位Hash桶
+        //                    e.next = newTable[i];//元素连接到桶中,这里相当于单链表的插入，总是插入在最前面
+        //                    newTable[i] = e;//newTable[i]的值总是最新插入的值
+        //                    e = next;//继续下一个元素
+        //                }
+        //            }
+        //        }
 
-//        void transfer(Entry[] newTable, boolean rehash) {
-//            int newCapacity = newTable.length;//容量
-//            for (Entry<K,V> e : table) { //遍历所有桶
-//                while(null != e) {  //遍历桶中所有元素（是一个链表）
-//                    Entry<K,V> next = e.next;
-//                    if (rehash) {//如果是重新Hash，则需要重新计算hash值
-//                        e.hash = null == e.key ? 0 : hash(e.key);
-//                    }
-//                    int i = indexFor(e.hash, newCapacity);//定位Hash桶
-//                    e.next = newTable[i];//元素连接到桶中,这里相当于单链表的插入，总是插入在最前面
-//                    newTable[i] = e;//newTable[i]的值总是最新插入的值
-//                    e = next;//继续下一个元素
-//                }
-//            }
-//        }
-
-
-//        hashmap的链表死循环问题
-//          1.hashmap并发插入,导致hashmap扩容，由于hashmap采用的是头插法，当一个线程扩容完之后，链表的顺序发生了颠倒，此时另一个线程再去扩容，就会发现此时的next元素变成了他的上一个元素，导致链表死循环。
-
-
-
+        //        hashmap的链表死循环问题
+        //          1.hashmap并发插入,导致hashmap扩容，由于hashmap采用的是头插法，当一个线程扩容完之后，链表的顺序发生了颠倒，此时另一个线程再去扩容，就会发现此时的next元素变成了他的上一个元素，导致链表死循环。
 
     }
 }

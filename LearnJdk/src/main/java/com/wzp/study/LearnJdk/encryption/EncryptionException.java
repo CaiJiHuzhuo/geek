@@ -4,17 +4,15 @@
  */
 package com.wzp.study.LearnJdk.encryption;
 
-
 /**
- * 
  * @author runzhi
  */
 public class EncryptionException extends Exception {
 
     private static final long serialVersionUID = -238091758285157331L;
 
-    private String            errCode;
-    private String            errMsg;
+    private String errCode;
+    private String errMsg;
 
     public EncryptionException() {
         super();

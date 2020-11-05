@@ -11,12 +11,12 @@ public class Shop {
     }
 
     public String getPrice1(String product) {
-        double price =  calculatePrice(product);
+        double price = calculatePrice(product);
         Discount.Code code = Discount.Code.values()[random.nextInt(Discount.Code.values().length)];
         return String.format("%s:%.2f:%s", product, price, code);
     }
 
-    public Future<Double> getPriceAsync(String product){
+    public Future<Double> getPriceAsync(String product) {
         CompletableFuture<Double> futurePrice = new CompletableFuture<>();
         new Thread(() -> {
             double price = calculatePrice(product);
@@ -25,7 +25,7 @@ public class Shop {
         return futurePrice;
     }
 
-    public Future<Double> getPriceAsync1(String product){
+    public Future<Double> getPriceAsync1(String product) {
         CompletableFuture<Double> futurePrice = new CompletableFuture<>();
         new Thread(() -> {
             try {
@@ -38,25 +38,24 @@ public class Shop {
         return futurePrice;
     }
 
-    public Future<Double> getPriceAsync2(String product){
+    public Future<Double> getPriceAsync2(String product) {
         return CompletableFuture.supplyAsync(() -> calculatePrice(product));
     }
 
-    public static final Executor executor = Executors.newFixedThreadPool(100,
-            new ThreadFactory() {
-                @Override
-                public Thread newThread(Runnable r) {
-                    Thread t = new Thread(r);
-                    t.setDaemon(true);
-                    return t;
-                }
-            });
+    public static final Executor executor = Executors.newFixedThreadPool(100, new ThreadFactory() {
+        @Override
+        public Thread newThread(Runnable r) {
+            Thread t = new Thread(r);
+            t.setDaemon(true);
+            return t;
+        }
+    });
 
-    public Future<Double> getPriceAsync3(String product){
-        return CompletableFuture.supplyAsync(() -> calculatePrice(product),executor);
+    public Future<Double> getPriceAsync3(String product) {
+        return CompletableFuture.supplyAsync(() -> calculatePrice(product), executor);
     }
 
-    public CompletableFuture<Double> getPriceAsync4(String product){
+    public CompletableFuture<Double> getPriceAsync4(String product) {
         return CompletableFuture.supplyAsync(() -> calculatePrice(product));
     }
 
