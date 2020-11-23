@@ -17,7 +17,7 @@ package com.wzp.study.LearnJdk.leetcode;
 public class Leetcode31 {
 
     public static void main(String[] args) {
-        int[] init = new int[]{2,3,1};
+        int[] init = new int[]{5,4,7,5,3,2};
         nextPermutation(init);
         for (int i :init
         ) {
@@ -27,32 +27,40 @@ public class Leetcode31 {
     }
 
     public static void nextPermutation(int[] nums) {
-        int i = nums.length - 2;
-        while (i >= 0 && nums[i] >= nums[i + 1]) {
-            i--;
+        int right = 0;
+        boolean isNeed = false;
+
+        for(int i = nums.length-1;i >= 0;i--){
+                if(nums[i-1] < nums[i]){
+                    right = i-1;
+                    isNeed = true;
+                    break;
+                }
         }
-        if (i >= 0) {
-            int j = nums.length - 1;
-            while (j >= 0 && nums[i] >= nums[j]) {
-                j--;
+
+        if(isNeed){
+            for(int i = nums.length-1;i >= 0;i--){
+                if(nums[i] > nums[right]){
+                    int temp = nums[i];
+                    nums[i] = nums[right];
+                    nums[right] = temp;
+                    int w = right + 1;
+                    for(int j = w , k = 0;j < (nums.length-w)/2+w;j++,k++){
+                        int inTemp = nums[j];
+                        nums[j] = nums[nums.length-1-k];
+                        nums[nums.length-1-k] = inTemp;
+                    }
+                    return;
+                }
             }
-            swap(nums, i, j);
         }
-        reverse(nums, i + 1);
-    }
 
-    public static void swap(int[] nums, int i, int j) {
-        int temp = nums[i];
-        nums[i] = nums[j];
-        nums[j] = temp;
-    }
-
-    public static void reverse(int[] nums, int start) {
-        int left = start, right = nums.length - 1;
-        while (left < right) {
-            swap(nums, left, right);
-            left++;
-            right--;
+        for(int i = 0;i < nums.length/2;i++){
+            int temp = nums[i];
+            nums[i] = nums[nums.length-i-1];
+            nums[nums.length-i-1] = temp;
         }
+
+
     }
 }
