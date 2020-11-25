@@ -15,6 +15,7 @@
         <module>LearnGson</module>
         <module>LearnSentinel</module>
         <module>LearnEjob</module>
+        <module>LearnEjob</module>
     </modules>
 
     <dependencies>
