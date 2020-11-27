@@ -16,6 +16,7 @@
         <module>LearnSentinel</module>
         <module>LearnEjob</module>
         <module>LearnEjob</module>
+        <module>DesignPatterns</module>
     </modules>
 
     <dependencies>
