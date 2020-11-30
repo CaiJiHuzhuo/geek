@@ -7,13 +7,27 @@
  */
 package com.wzp.study.designPatterns.iterator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * TODO
  *
  * @author admin
  * @version V1.0
- * @since 2020-11-26 10:00
+ * @since 2020-11-30 15:17
  */
-public interface Aggregate {
-    Iterator iterator();
+public class BookShelf implements Aggregate{
+
+    List<Book> list = new ArrayList<>();
+
+    @Override
+    public Iterator iterator() {
+        return new BookShelfIterator(this);
+    }
+
+    public void append(String name){
+        Book book = new Book(name);
+        list.add(book);
+    }
 }

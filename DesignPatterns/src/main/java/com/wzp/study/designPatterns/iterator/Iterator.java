@@ -12,8 +12,11 @@ package com.wzp.study.designPatterns.iterator;
  *
  * @author admin
  * @version V1.0
- * @since 2020-11-26 10:00
+ * @since 2020-11-30 14:12
  */
-public interface Aggregate {
-    Iterator iterator();
+public interface Iterator {
+
+    boolean hashNext();
+
+    Book next();
 }

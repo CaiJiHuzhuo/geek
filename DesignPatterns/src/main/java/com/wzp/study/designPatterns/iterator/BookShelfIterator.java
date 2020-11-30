@@ -12,8 +12,27 @@ package com.wzp.study.designPatterns.iterator;
  *
  * @author admin
  * @version V1.0
- * @since 2020-11-26 10:00
+ * @since 2020-11-30 15:18
  */
-public interface Aggregate {
-    Iterator iterator();
+public class BookShelfIterator implements Iterator{
+
+    BookShelf bookShelf;
+
+    int index = 0;
+
+    @Override
+    public boolean hashNext() {
+        return index < bookShelf.list.size();
+    }
+
+    @Override
+    public Book next() {
+        Book book = bookShelf.list.get(index);
+        index++;
+        return book;
+    }
+
+    public BookShelfIterator(BookShelf bookShelf) {
+        this.bookShelf = bookShelf;
+    }
 }

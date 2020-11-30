@@ -12,8 +12,17 @@ package com.wzp.study.designPatterns.iterator;
  *
  * @author admin
  * @version V1.0
- * @since 2020-11-26 10:00
+ * @since 2020-11-30 15:51
  */
-public interface Aggregate {
-    Iterator iterator();
+public class Test {
+    public static void main(String[] args) {
+        BookShelf bookShelf = new BookShelf();
+        bookShelf.append("java从入门到入土");
+        bookShelf.append("mysql从上手到秃头");
+        bookShelf.append("netty从懵圈到懵逼");
+        Iterator iterator = bookShelf.iterator();
+        while (iterator.hashNext()){
+            System.out.println(iterator.next().getName());
+        }
+    }
 }

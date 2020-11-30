@@ -12,8 +12,20 @@ package com.wzp.study.designPatterns.iterator;
  *
  * @author admin
  * @version V1.0
- * @since 2020-11-26 10:00
+ * @since 2020-11-30 15:44
  */
-public interface Aggregate {
-    Iterator iterator();
+public class Book {
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Book(String name) {
+        this.name = name;
+    }
 }
