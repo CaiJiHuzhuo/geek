@@ -46,7 +46,7 @@ public class ScatteringAndGatheringTest {
             byteBuffers[1].flip();
 
             long byteWrite = 0;
-            while (byteRead < messageLength){
+            while (byteWrite < messageLength){
                 long write = socketChannel.write(byteBuffers);
                 byteWrite += write;
             }

@@ -17,6 +17,7 @@
         <module>LearnEjob</module>
         <module>LearnEjob</module>
         <module>DesignPatterns</module>
+        <module>netty</module>
     </modules>
 
     <dependencies>
