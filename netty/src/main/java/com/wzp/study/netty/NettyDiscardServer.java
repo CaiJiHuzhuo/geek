@@ -72,7 +72,6 @@ public class NettyDiscardServer {
     }
 
     public static void main(String[] args) {
-//        new NettyDiscardServer(9724).runServer();
-        log.info("rizhi");
+        new NettyDiscardServer(9724).runServer();
     }
 }
