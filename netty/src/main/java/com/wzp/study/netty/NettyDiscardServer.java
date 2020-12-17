@@ -7,6 +7,10 @@
  */
 package com.wzp.study.netty;
 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.ChannelFuture;
@@ -68,6 +72,7 @@ public class NettyDiscardServer {
     }
 
     public static void main(String[] args) {
-        new NettyDiscardServer(9724).runServer();
+//        new NettyDiscardServer(9724).runServer();
+        log.info("rizhi");
     }
 }
