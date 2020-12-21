@@ -1,6 +1,5 @@
 package com.wzp.study.netty;
 
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -22,9 +21,7 @@ public class EchoClient {
 
     public void start() throws IOException {
 
-        InetSocketAddress address =
-                new InetSocketAddress("127.0.0.1",
-                        9724);
+        InetSocketAddress address = new InetSocketAddress("127.0.0.1", 9724);
 
         // 1、获取通道（channel）
         SocketChannel socketChannel = SocketChannel.open(address);
@@ -50,8 +47,7 @@ public class EchoClient {
             //Reactor初始化
             selector = Selector.open();
             this.channel = channel;
-            channel.register(selector,
-                    SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+            channel.register(selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
         }
 
         @Override
@@ -70,7 +66,7 @@ public class EchoClient {
                             System.out.println("请输入发送内容:");
                             if (scanner.hasNext()) {
                                 SocketChannel socketChannel = (SocketChannel) sk.channel();
-//                                scanner.nextLine()
+                                //                                scanner.nextLine()
                                 String next = scanner.nextLine();
                                 System.out.println("发送" + next);
                                 buffer.put((new Date() + " >>" + next).getBytes());
