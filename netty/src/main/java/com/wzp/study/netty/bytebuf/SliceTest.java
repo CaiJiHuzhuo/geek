@@ -18,36 +18,19 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @author admin
  * @version V1.0
- * @since 2020-12-22 14:34
+ * @since 2020-12-22 15:28
  */
 @Slf4j
 public class SliceTest {
 
     @Test
     public void testSlice(){
-        //9 初始容量 100 最大限制，默认是池化
         ByteBuf buffer = ByteBufAllocator.DEFAULT.buffer(9, 100);
-        log.info("分配了一个9,100 的bytebuf  {}",buffer);
+        log.info("分配ByteBuf(9,100),{}",buffer);
         buffer.writeBytes(new byte[]{1,2,3,4});
-        log.info("写入4个字节 {}",buffer);
-
-        getByteBuf(buffer);
-
-
-
-
-    }
-
-    private void readByteBuf(ByteBuf byteBuf){
-        while (byteBuf.isReadable()){
-            log.info("取一个字节：{}"+byteBuf.readByte());
-        }
-    }
-
-
-    private void getByteBuf(ByteBuf byteBuf){
-        for (int i = 0; i < byteBuf.readableBytes(); i++) {
-            log.info("读一个字节 {}",byteBuf.getByte(i));
-        }
+        ByteBuf slice = buffer.slice();
+        log.info("slice : {}",slice);
+        ByteBuf duplicate = buffer.duplicate();
+        log.info("duplicate : {}",duplicate);
     }
 }
