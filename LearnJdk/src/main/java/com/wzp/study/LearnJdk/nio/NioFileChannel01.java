@@ -23,14 +23,14 @@ import java.nio.channels.FileChannel;
 public class NioFileChannel01 {
     public static void main(String[] args) throws IOException {
         String str = "hello,尚硅谷";
-        FileOutputStream fileOutputStream = new FileOutputStream("d:\\nio.txt");
-        FileChannel fileChannel = fileOutputStream.getChannel();
 
         ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
         byteBuffer.put(str.getBytes());
 
         byteBuffer.flip();
 
+        FileOutputStream fileOutputStream = new FileOutputStream("d:\\nio.txt");
+        FileChannel fileChannel = fileOutputStream.getChannel();
         fileChannel.write(byteBuffer);
         fileOutputStream.close();
     }

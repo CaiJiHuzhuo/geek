@@ -24,16 +24,18 @@ public class BIOclient {
     public static void main(String[] args) throws IOException {
         Socket socket = new Socket();
 
-        InetSocketAddress inetSocketAddress = new InetSocketAddress(6666);
+        InetSocketAddress inetSocketAddress = new InetSocketAddress(9724);
         socket.connect(inetSocketAddress);
 
         OutputStream outputStream = socket.getOutputStream();
 
         outputStream.write("hello bio".getBytes());
 
-        socket.close();
+        while (true) {
+
+        }
+
+//        socket.close();
     }
-
-
 
 }

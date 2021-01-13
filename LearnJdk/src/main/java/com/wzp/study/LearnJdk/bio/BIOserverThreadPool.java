@@ -15,21 +15,22 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * 单线程
+ * 线程池
  *
  * @author admin
  * @version V1.0
  * @since 2020-11-30 19:17
  */
-public class BIOserver {
+public class BIOserverThreadPool {
     public static void main(String[] args) throws IOException {
 
+        ExecutorService newCachedThreadPool = Executors.newCachedThreadPool();
 
-        ServerSocket serverSocket = new ServerSocket(9724);
+        ServerSocket serverSocket = new ServerSocket(6666);
         while (true) {
             Socket socket = serverSocket.accept();
 
-            handle(socket);
+            newCachedThreadPool.execute(() -> handle(socket));
 
         }
     }
