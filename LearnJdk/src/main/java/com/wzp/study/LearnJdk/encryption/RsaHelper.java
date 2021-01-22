@@ -23,9 +23,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import org.apache.commons.codec.binary.Base64;
-import org.springframework.stereotype.Component;
 
-@Component
 public class RsaHelper {
     /**
      * 生成公钥、私钥对(keysize=1024)
