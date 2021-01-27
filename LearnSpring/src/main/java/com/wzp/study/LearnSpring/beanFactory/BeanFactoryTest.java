@@ -10,6 +10,7 @@ package com.wzp.study.LearnSpring.beanFactory;
 import org.junit.Test;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 
 /**
@@ -23,9 +24,12 @@ public class BeanFactoryTest {
 
     @Test
     public void testSimpleLoad(){
-        BeanFactory bf = new XmlBeanFactory(new ClassPathResource("beanFactoryTest.xml"));
-        MyTestBean myTestBean = (MyTestBean) bf.getBean("myTestBean");
-        System.out.println(myTestBean.getTestStr());
+//        BeanFactory bf = new XmlBeanFactory(new ClassPathResource("beanFactoryTest.xml"));
+//        MyTestBean myTestBean = (MyTestBean) bf.getBean("myTestBean");
+//        System.out.println(myTestBean.getTestStr());
 
+        ClassPathXmlApplicationContext classPathXmlApplicationContext = new ClassPathXmlApplicationContext("beanFactoryTest.xml");
+        MyTestBean myTestBean = (MyTestBean) classPathXmlApplicationContext.getBean("myTestBean");
+        System.out.println(myTestBean.getTestStr());
     }
 }

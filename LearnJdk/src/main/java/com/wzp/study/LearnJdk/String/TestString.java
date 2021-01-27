@@ -7,8 +7,13 @@
  */
 package com.wzp.study.LearnJdk.String;
 
+import static java.util.Collections.synchronizedSet;
+import static java.util.Collections.unmodifiableSet;
+
 import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.junit.Test;
@@ -21,7 +26,16 @@ import org.junit.Test;
  * @since 2020-12-28 10:19
  */
 public class TestString {
+    @Test
+    public void testReference(){
+        Set<String> newSet = new LinkedHashSet<>();
+        newSet.add("test");
 
+        Set<String> unstring = unmodifiableSet(newSet);
+
+        Set<String> strings = new LinkedHashSet<>(unstring);
+        System.out.println(strings);
+    }
 
     @Test
     public void testString(){
