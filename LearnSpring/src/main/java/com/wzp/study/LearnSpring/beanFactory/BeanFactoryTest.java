@@ -10,6 +10,7 @@ package com.wzp.study.LearnSpring.beanFactory;
 import org.junit.Test;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 
@@ -28,8 +29,12 @@ public class BeanFactoryTest {
 //        MyTestBean myTestBean = (MyTestBean) bf.getBean("myTestBean");
 //        System.out.println(myTestBean.getTestStr());
 
-        ClassPathXmlApplicationContext classPathXmlApplicationContext = new ClassPathXmlApplicationContext("beanFactoryTest.xml");
-        MyTestBean myTestBean = (MyTestBean) classPathXmlApplicationContext.getBean("myTestBean");
-        System.out.println(myTestBean.getTestStr());
+//        ClassPathXmlApplicationContext classPathXmlApplicationContext = new ClassPathXmlApplicationContext("beanFactoryTest.xml");
+//        MyTestBean myTestBean1 = (MyTestBean) classPathXmlApplicationContext.getBean("myTestBean");
+//        myTestBean1.test();
+
+        AnnotationConfigApplicationContext annotationConfigApplicationContext = new AnnotationConfigApplicationContext("com.wzp.study.LearnSpring.beanFactory");
+        MyTestBean myTestBean1 = (MyTestBean) annotationConfigApplicationContext.getBean("myTestBean");
+        myTestBean1.test();
     }
 }

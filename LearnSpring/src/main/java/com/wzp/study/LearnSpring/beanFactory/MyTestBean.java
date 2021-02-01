@@ -7,6 +7,8 @@
  */
 package com.wzp.study.LearnSpring.beanFactory;
 
+import org.springframework.stereotype.Component;
+
 /**
  * TODO
  *
@@ -14,6 +16,7 @@ package com.wzp.study.LearnSpring.beanFactory;
  * @version V1.0
  * @since 2021-01-18 10:59
  */
+@Component
 public class MyTestBean {
 
     private String testStr = "testStr";
@@ -24,5 +27,9 @@ public class MyTestBean {
 
     public void setTestStr(String testStr) {
         this.testStr = testStr;
+    }
+
+    public void test(){
+        System.out.println("test");
     }
 }
