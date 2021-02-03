@@ -7,29 +7,12 @@
  */
 package com.wzp.study.LearnSpring.beanFactory;
 
-import org.springframework.stereotype.Component;
-
 /**
  * TODO
  *
  * @author admin
  * @version V1.0
- * @since 2021-01-18 10:59
+ * @since 2021-02-03 09:52
  */
-@Component
-public class MyTestBean implements TestService{
-
-    private String testStr = "testStr";
-
-    public String getTestStr() {
-        return testStr;
-    }
-
-    public void setTestStr(String testStr) {
-        this.testStr = testStr;
-    }
-
-    public void test(){
-        System.out.println("test");
-    }
+public interface TestService {
 }
