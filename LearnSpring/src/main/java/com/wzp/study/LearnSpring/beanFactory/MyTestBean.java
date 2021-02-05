@@ -29,6 +29,7 @@ public class MyTestBean implements TestService{
         this.testStr = testStr;
     }
 
+    @Override
     public void test(){
         System.out.println("test");
     }

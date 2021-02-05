@@ -15,4 +15,6 @@ package com.wzp.study.LearnSpring.beanFactory;
  * @since 2021-02-03 09:52
  */
 public interface TestService {
+
+    void test();
 }

@@ -34,7 +34,7 @@ public class BeanFactoryTest {
 //        myTestBean1.test();
 
         AnnotationConfigApplicationContext annotationConfigApplicationContext = new AnnotationConfigApplicationContext("com.wzp.study.LearnSpring.beanFactory");
-        MyTestBean myTestBean1 = (MyTestBean) annotationConfigApplicationContext.getBean("myTestBean");
+        TestService myTestBean1 = (TestService) annotationConfigApplicationContext.getBean("myTestBean");
         System.out.println(myTestBean1);
         myTestBean1.test();
     }

@@ -29,6 +29,11 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @Configuration
 public class AopConfig {
 
+    @After("execution(public * com.wzp.study.LearnSpring.beanFactory.MyTestBean.test())")
+    public void doAfter(JoinPoint jp) {
+        System.out.println("After");
+    }
+
     @Before("execution(public * com.wzp.study.LearnSpring.beanFactory.MyTestBean.test())")
     public void doBefore(JoinPoint jp) {
         System.out.println("before");
@@ -43,9 +48,6 @@ public class AopConfig {
         return result;
     }
 
-    @After("execution(public * com.wzp.study.LearnSpring.beanFactory.MyTestBean.test())")
-    public void doAfter(JoinPoint jp) {
-        System.out.println("After");
-    }
+
 
 }
