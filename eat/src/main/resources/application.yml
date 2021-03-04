@@ -1,0 +1,14 @@
+server:
+  port: 80
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://101.132.178.242:3306/eat?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8&useSSL=false
+    username: root
+    password: Xwzp9724=
+    type: com.alibaba.druid.pool.DruidDataSource
+mybatis:
+  #  mapper文件
+  mapper-locations: classpath:sqlmap/*Mapper.xml
+  #  实体类
+  type-aliases-package: com.wzp.mouth.eat.dao

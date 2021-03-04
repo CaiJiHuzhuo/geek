@@ -7,34 +7,23 @@
  */
 package com.wzp.study.LearnSpring.beanFactory;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  * TODO
  *
  * @author admin
  * @version V1.0
- * @since 2021-01-18 10:59
+ * @since 2021-03-02 11:42
  */
-@Component
-public class MyTestBean implements TestService{
+@Service
+public class TestPro {
 
-    @Autowired
-    TestPro testPro;
-
-    private String testStr = "testStr";
-
-    public String getTestStr() {
-        return testStr;
-    }
-
-    public void setTestStr(String testStr) {
-        this.testStr = testStr;
-    }
-
-    @Override
     public void test(){
-        testPro.test();
+        System.out.println("testPro");
+    }
+
+    public TestPro(){
+        System.out.println("TestPro构造器");
     }
 }

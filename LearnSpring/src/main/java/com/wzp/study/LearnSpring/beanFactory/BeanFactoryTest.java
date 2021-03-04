@@ -27,12 +27,12 @@ public class BeanFactoryTest {
     public void testSimpleLoad(){
 //        BeanFactory bf = new XmlBeanFactory(new ClassPathResource("beanFactoryTest.xml"));
 //        MyTestBean myTestBean = (MyTestBean) bf.getBean("myTestBean");
-//        System.out.println(myTestBean.getTestStr());
+//        myTestBean.test();
 
 //        ClassPathXmlApplicationContext classPathXmlApplicationContext = new ClassPathXmlApplicationContext("beanFactoryTest.xml");
-//        MyTestBean myTestBean1 = (MyTestBean) classPathXmlApplicationContext.getBean("myTestBean");
+//        TestService myTestBean1 = (TestService) classPathXmlApplicationContext.getBean("myTestBean");
 //        myTestBean1.test();
-
+//
         AnnotationConfigApplicationContext annotationConfigApplicationContext = new AnnotationConfigApplicationContext("com.wzp.study.LearnSpring.beanFactory");
         TestService myTestBean1 = (TestService) annotationConfigApplicationContext.getBean("myTestBean");
         System.out.println(myTestBean1);

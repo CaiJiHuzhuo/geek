@@ -1,5 +1,7 @@
 package com.wzp.study.LearnJdk.intIntegerString;
 
+import java.util.Random;
+
 /**
  * @ClassName : TestConvert
  * @Description : int Integer String之间的转换
@@ -24,6 +26,11 @@ public class TestConvert {
 
         //int 转String
         String s = String.valueOf(i1);
+
+        for (int j = 0 ;j < 100 ;j++) {
+            Random random = new Random();
+            System.out.println(random.nextInt(90 + 1));
+        }
     }
 
 }
