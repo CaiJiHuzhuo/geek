@@ -7,13 +7,8 @@
  */
 package com.wzp.mouth.eat.controller;
 
-import com.wzp.mouth.eat.dao.Restaurantname;
-import com.wzp.mouth.eat.mapper.RestaurantnameMapper;
 import com.wzp.mouth.eat.service.AService;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import com.wzp.mouth.eat.service.EatService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -33,7 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class EatController {
 
     @Autowired
-    RestaurantnameMapper restaurantnameMapper;
+    EatService eatService;
+
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String addFoodRestaurant(String userName, String rName, String weight) {
@@ -42,9 +38,9 @@ public class EatController {
         }
         //weight 默认为10
         //存dao 存redis
-        restaurantnameMapper.insertName(userName, rName, weight);
+        eatService.insertMenu(userName,rName,weight);
 
-        return "a";
+        return "ok";
     }
 
     //随机出一个结果，将结果保存到redis缓存中，redis中缓存中少于
@@ -53,22 +49,10 @@ public class EatController {
         if (StringUtils.isEmpty(userName)) {
             return "缺少参数！";
         }
-        List<Restaurantname> restaurantnames = restaurantnameMapper.selectName(userName);
-
-        return getRandom(restaurantnames);
+        return eatService.getFoodRestaurant(userName);
     }
 
-    public static String getRandom(List<Restaurantname> restaurantnames) {
-        List<String> rList = new ArrayList<>();
-        for (Restaurantname restaurantname : restaurantnames) {
 
-            for (int i = 0; i < restaurantname.getWeight(); i++) {
-                rList.add(restaurantname.getRestaurantName());
-            }
-        }
-        Random random = new Random();
-        return rList.get(random.nextInt(rList.size() + 1));
-    }
 
     @Autowired
     AService aService;

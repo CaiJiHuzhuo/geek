@@ -3,6 +3,7 @@ package com.wzp.mouth.eat.util;
 
 
 import com.wzp.mouth.eat.Common.MessageType;
+import com.wzp.mouth.eat.service.EatService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
@@ -16,6 +17,8 @@ import java.util.Map;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,9 +26,13 @@ import lombok.extern.slf4j.Slf4j;
  * 消息处理工具类
  * Created by xdp on 2016/1/26.
  */
+@Service
 @Slf4j
 public class MessageHandlerUtil {
 
+
+    @Autowired
+    EatService eatService;
 
     /**
      * 解析微信发来的请求（XML）
@@ -64,100 +71,132 @@ public class MessageHandlerUtil {
      * @param map 封装了解析结果的Map
      * @return responseMessage(响应消息)
      */
-    public static String buildResponseMessage(Map map) {
+    public String buildResponseMessage(Map map) {
         //响应消息
         String responseMessage = "";
         //得到消息类型
         String msgType = map.get("MsgType").toString();
-        log.info("MsgType:" + msgType);
         //消息类型
         MessageType messageEnumType = MessageType.valueOf(MessageType.class, msgType.toUpperCase());
         switch (messageEnumType) {
-            case TEXT:
-                //处理文本消息
-                responseMessage = handleTextMessage(map);
-                break;
-            case IMAGE:
-                //处理图片消息
-                responseMessage = handleImageMessage(map);
-                break;
-            case VOICE:
-                //处理语音消息
-                responseMessage = handleVoiceMessage(map);
-                break;
-            case VIDEO:
-                //处理视频消息
-                responseMessage = handleVideoMessage(map);
-                break;
-            case SHORTVIDEO:
-                //处理小视频消息
-                responseMessage = handleSmallVideoMessage(map);
-                break;
-            case LOCATION:
-                //处理位置消息
-                responseMessage = handleLocationMessage(map);
-                break;
-            case LINK:
-                //处理链接消息
-                responseMessage = handleLinkMessage(map);
-                break;
-            case EVENT:
-                //处理事件消息,用户在关注与取消关注公众号时，微信会向我们的公众号服务器发送事件消息,开发者接收到事件消息后就可以给用户下发欢迎消息
-                responseMessage = handleEventMessage(map);
-            default:
-                break;
+        case TEXT:
+            //处理文本消息
+            responseMessage = handleTextMessage(map);
+            break;
+        case IMAGE:
+            //处理图片消息
+            responseMessage = handleImageMessage(map);
+            break;
+        case VOICE:
+            //处理语音消息
+            responseMessage = handleVoiceMessage(map);
+            break;
+        case VIDEO:
+            //处理视频消息
+            responseMessage = handleVideoMessage(map);
+            break;
+        case SHORTVIDEO:
+            //处理小视频消息
+            responseMessage = handleSmallVideoMessage(map);
+            break;
+        case LOCATION:
+            //处理位置消息
+            responseMessage = handleLocationMessage(map);
+            break;
+        case LINK:
+            //处理链接消息
+            responseMessage = handleLinkMessage(map);
+            break;
+        case EVENT:
+            //处理事件消息,用户在关注与取消关注公众号时，微信会向我们的公众号服务器发送事件消息,开发者接收到事件消息后就可以给用户下发欢迎消息
+            responseMessage = handleEventMessage(map);
+        default:
+            break;
         }
         //返回响应消息
         return responseMessage;
     }
 
+    private Map<String, Boolean> fan = new HashMap<>();
+
     /**
      * 接收到文本消息后处理
+     *
      * @param map 封装了解析结果的Map
      * @return
      */
-    private static String handleTextMessage(Map<String, String> map) {
+    private String handleTextMessage(Map<String, String> map) {
         //响应消息
         String responseMessage;
         // 消息内容
         String content = map.get("Content");
+        String openId = map.get("FromUserName");
+
         switch (content) {
-            case "文本":
-                String msgText = "孤傲苍狼又要开始写博客总结了,欢迎朋友们访问我在博客园上面写的博客\n" +
-                        "<a href=\"http://www.cnblogs.com/xdp-gacl\">孤傲苍狼的博客</a>";
-                responseMessage = buildTextMessage(map, msgText);
-                break;
-            case "图片":
-                //通过素材管理接口上传图片时得到的media_id
-                String imgMediaId = "dSQCiEHYB-pgi7ib5KpeoFlqpg09J31H28rex6xKgwWrln3HY0BTsoxnRV-xC_SQ";
-                responseMessage = buildImageMessage(map, imgMediaId);
-                break;
-            case "语音":
-                //通过素材管理接口上传语音文件时得到的media_id
-                String voiceMediaId = "h3ul0TnwaRPut6Tl1Xlf0kk_9aUqtQvfM5Oq21unoWqJrwks505pkMGMbHnCHBBZ";
-                responseMessage = buildVoiceMessage(map,voiceMediaId);
-                break;
-            case "图文":
-                responseMessage = buildNewsMessage(map);
-                break;
-            case "音乐":
-                Music music = new Music();
-                music.title = "赵丽颖、许志安 - 乱世俱灭";
-                music.description = "电视剧《蜀山战纪》插曲";
-                music.musicUrl = "http://gacl.ngrok.natapp.cn/media/music/music.mp3";
-                music.hqMusicUrl = "http://gacl.ngrok.natapp.cn/media/music/music.mp3";
-                responseMessage = buildMusicMessage(map, music);
-                break;
-            case "视频":
-                Video video = new Video();
-                video.mediaId = "GqmIGpLu41rtwaY7WCVtJAL3ZbslzKiuLEXfWIKYDnHXGObH1CBH71xtgrGwyCa3";
-                video.title = "小苹果";
-                video.description = "小苹果搞笑视频";
-                responseMessage = buildVideoMessage(map, video);
-                break;
-            default:
+        case "干饭":
+            fan.put(openId, false);
+            String restaurantText = eatService.getFoodRestaurant(openId);
+            responseMessage = buildTextMessage(map, restaurantText);
+            break;
+        case "饭单":
+            fan.put(openId, false);
+            String menuText = eatService.getAllFoodRestaurant(openId);
+            responseMessage = buildTextMessage(map, menuText);
+            break;
+
+        case "加饭":
+            Boolean exist = fan.get(openId);
+            if (exist == null || !exist) {
+                fan.put(openId, true);
+            }
+
+            String fanText = "准备加饭：";
+            responseMessage = buildTextMessage(map, fanText);
+            break;
+
+        case "文本":
+            String msgText =
+                "孤傲苍狼又要开始写博客总结了,欢迎朋友们访问我在博客园上面写的博客\n" + "<a href=\"http://www.cnblogs.com/xdp-gacl\">孤傲苍狼的博客</a>";
+            responseMessage = buildTextMessage(map, msgText);
+            break;
+        case "图片":
+            //通过素材管理接口上传图片时得到的media_id
+            String imgMediaId = "dSQCiEHYB-pgi7ib5KpeoFlqpg09J31H28rex6xKgwWrln3HY0BTsoxnRV-xC_SQ";
+            responseMessage = buildImageMessage(map, imgMediaId);
+            break;
+        case "语音":
+            //通过素材管理接口上传语音文件时得到的media_id
+            String voiceMediaId = "h3ul0TnwaRPut6Tl1Xlf0kk_9aUqtQvfM5Oq21unoWqJrwks505pkMGMbHnCHBBZ";
+            responseMessage = buildVoiceMessage(map, voiceMediaId);
+            break;
+        case "图文":
+            responseMessage = buildNewsMessage(map);
+            break;
+        case "音乐":
+            Music music = new Music();
+            music.title = "赵丽颖、许志安 - 乱世俱灭";
+            music.description = "电视剧《蜀山战纪》插曲";
+            music.musicUrl = "http://gacl.ngrok.natapp.cn/media/music/music.mp3";
+            music.hqMusicUrl = "http://gacl.ngrok.natapp.cn/media/music/music.mp3";
+            responseMessage = buildMusicMessage(map, music);
+            break;
+        case "视频":
+            Video video = new Video();
+            video.mediaId = "GqmIGpLu41rtwaY7WCVtJAL3ZbslzKiuLEXfWIKYDnHXGObH1CBH71xtgrGwyCa3";
+            video.title = "小苹果";
+            video.description = "小苹果搞笑视频";
+            responseMessage = buildVideoMessage(map, video);
+            break;
+        default:
+            Boolean isExist = fan.get(openId);
+            if (isExist!=null && isExist) {
+                eatService.insertMenu(openId, content.split(" ")[0], content.split(" ")[1]);
+                responseMessage = buildTextMessage(map, "添加" + content.split(" ")[0] + "成功！");
+            } else {
                 responseMessage = buildWelcomeTextMessage(map);
-                break;
+            }
+
+            break;
 
         }
         //返回响应消息
@@ -193,16 +232,16 @@ public class MessageHandlerUtil {
         // 开发者微信号
         String toUserName = map.get("ToUserName");
         responseMessageXml = String
-                .format(
-                        "<xml>" +
-                                "<ToUserName><![CDATA[%s]]></ToUserName>" +
-                                "<FromUserName><![CDATA[%s]]></FromUserName>" +
-                                "<CreateTime>%s</CreateTime>" +
-                                "<MsgType><![CDATA[text]]></MsgType>" +
-                                "<Content><![CDATA[%s]]></Content>" +
-                                "</xml>",
-                        fromUserName, toUserName, getMessageCreateTime(),
-                        "感谢您关注我的个人公众号，请回复如下关键词来使用公众号提供的服务：\n文本\n图片\n语音\n视频\n音乐\n图文");
+            .format(
+                "<xml>" +
+                    "<ToUserName><![CDATA[%s]]></ToUserName>" +
+                    "<FromUserName><![CDATA[%s]]></FromUserName>" +
+                    "<CreateTime>%s</CreateTime>" +
+                    "<MsgType><![CDATA[text]]></MsgType>" +
+                    "<Content><![CDATA[%s]]></Content>" +
+                "</xml>",
+                fromUserName, toUserName, getMessageCreateTime(),
+                "感谢您关注我的个人公众号，请回复如下关键词来使用公众号提供的服务：\n干饭\n饭单\n加饭");
         return responseMessageXml;
     }
 
@@ -229,14 +268,14 @@ public class MessageHandlerUtil {
          </xml>
          */
         return String.format(
-                "<xml>" +
-                        "<ToUserName><![CDATA[%s]]></ToUserName>" +
-                        "<FromUserName><![CDATA[%s]]></FromUserName>" +
-                        "<CreateTime>%s</CreateTime>" +
-                        "<MsgType><![CDATA[text]]></MsgType>" +
-                        "<Content><![CDATA[%s]]></Content>" +
-                        "</xml>",
-                fromUserName, toUserName, getMessageCreateTime(), content);
+            "<xml>" +
+                "<ToUserName><![CDATA[%s]]></ToUserName>" +
+                "<FromUserName><![CDATA[%s]]></FromUserName>" +
+                "<CreateTime>%s</CreateTime>" +
+                "<MsgType><![CDATA[text]]></MsgType>" +
+                "<Content><![CDATA[%s]]></Content>" +
+                "</xml>",
+            fromUserName, toUserName, getMessageCreateTime(), content);
     }
 
     /**
@@ -263,16 +302,16 @@ public class MessageHandlerUtil {
          </xml>
          */
         return String.format(
-                "<xml>" +
-                        "<ToUserName><![CDATA[%s]]></ToUserName>" +
-                        "<FromUserName><![CDATA[%s]]></FromUserName>" +
-                        "<CreateTime>%s</CreateTime>" +
-                        "<MsgType><![CDATA[image]]></MsgType>" +
-                        "<Image>" +
-                        "   <MediaId><![CDATA[%s]]></MediaId>" +
-                        "</Image>" +
-                        "</xml>",
-                fromUserName, toUserName, getMessageCreateTime(), mediaId);
+            "<xml>" +
+                "<ToUserName><![CDATA[%s]]></ToUserName>" +
+                "<FromUserName><![CDATA[%s]]></FromUserName>" +
+                "<CreateTime>%s</CreateTime>" +
+                "<MsgType><![CDATA[image]]></MsgType>" +
+                "<Image>" +
+                "   <MediaId><![CDATA[%s]]></MediaId>" +
+                "</Image>" +
+                "</xml>",
+            fromUserName, toUserName, getMessageCreateTime(), mediaId);
     }
 
     /**
@@ -303,19 +342,19 @@ public class MessageHandlerUtil {
          </xml>
          */
         return String.format(
-                "<xml>" +
-                        "<ToUserName><![CDATA[%s]]></ToUserName>" +
-                        "<FromUserName><![CDATA[%s]]></FromUserName>" +
-                        "<CreateTime>%s</CreateTime>" +
-                        "<MsgType><![CDATA[music]]></MsgType>" +
-                        "<Music>" +
-                        "   <Title><![CDATA[%s]]></Title>" +
-                        "   <Description><![CDATA[%s]]></Description>" +
-                        "   <MusicUrl><![CDATA[%s]]></MusicUrl>" +
-                        "   <HQMusicUrl><![CDATA[%s]]></HQMusicUrl>" +
-                        "</Music>" +
-                        "</xml>",
-                fromUserName, toUserName, getMessageCreateTime(), music.title, music.description, music.musicUrl, music.hqMusicUrl);
+            "<xml>" +
+                "<ToUserName><![CDATA[%s]]></ToUserName>" +
+                "<FromUserName><![CDATA[%s]]></FromUserName>" +
+                "<CreateTime>%s</CreateTime>" +
+                "<MsgType><![CDATA[music]]></MsgType>" +
+                "<Music>" +
+                "   <Title><![CDATA[%s]]></Title>" +
+                "   <Description><![CDATA[%s]]></Description>" +
+                "   <MusicUrl><![CDATA[%s]]></MusicUrl>" +
+                "   <HQMusicUrl><![CDATA[%s]]></HQMusicUrl>" +
+                "</Music>" +
+                "</xml>",
+            fromUserName, toUserName, getMessageCreateTime(), music.title, music.description, music.musicUrl, music.hqMusicUrl);
     }
 
     /**
@@ -344,18 +383,18 @@ public class MessageHandlerUtil {
          </xml>
          */
         return String.format(
-                "<xml>" +
-                        "<ToUserName><![CDATA[%s]]></ToUserName>" +
-                        "<FromUserName><![CDATA[%s]]></FromUserName>" +
-                        "<CreateTime>%s</CreateTime>" +
-                        "<MsgType><![CDATA[video]]></MsgType>" +
-                        "<Video>" +
-                        "   <MediaId><![CDATA[%s]]></MediaId>" +
-                        "   <Title><![CDATA[%s]]></Title>" +
-                        "   <Description><![CDATA[%s]]></Description>" +
-                        "</Video>" +
-                        "</xml>",
-                fromUserName, toUserName, getMessageCreateTime(), video.mediaId, video.title, video.description);
+            "<xml>" +
+                "<ToUserName><![CDATA[%s]]></ToUserName>" +
+                "<FromUserName><![CDATA[%s]]></FromUserName>" +
+                "<CreateTime>%s</CreateTime>" +
+                "<MsgType><![CDATA[video]]></MsgType>" +
+                "<Video>" +
+                "   <MediaId><![CDATA[%s]]></MediaId>" +
+                "   <Title><![CDATA[%s]]></Title>" +
+                "   <Description><![CDATA[%s]]></Description>" +
+                "</Video>" +
+                "</xml>",
+            fromUserName, toUserName, getMessageCreateTime(), video.mediaId, video.title, video.description);
     }
 
     /**
@@ -382,16 +421,16 @@ public class MessageHandlerUtil {
          </xml>
          */
         return String.format(
-                "<xml>" +
-                        "<ToUserName><![CDATA[%s]]></ToUserName>" +
-                        "<FromUserName><![CDATA[%s]]></FromUserName>" +
-                        "<CreateTime>%s</CreateTime>" +
-                        "<MsgType><![CDATA[voice]]></MsgType>" +
-                        "<Voice>" +
-                        "   <MediaId><![CDATA[%s]]></MediaId>" +
-                        "</Voice>" +
-                        "</xml>",
-                fromUserName, toUserName, getMessageCreateTime(), mediaId);
+            "<xml>" +
+                "<ToUserName><![CDATA[%s]]></ToUserName>" +
+                "<FromUserName><![CDATA[%s]]></FromUserName>" +
+                "<CreateTime>%s</CreateTime>" +
+                "<MsgType><![CDATA[voice]]></MsgType>" +
+                "<Voice>" +
+                "   <MediaId><![CDATA[%s]]></MediaId>" +
+                "</Voice>" +
+                "</xml>",
+            fromUserName, toUserName, getMessageCreateTime(), mediaId);
     }
 
     /**
@@ -406,10 +445,10 @@ public class MessageHandlerUtil {
         NewsItem item = new NewsItem();
         item.Title = "微信开发学习总结（一）——微信开发环境搭建";
         item.Description = "工欲善其事，必先利其器。要做微信公众号开发，那么要先准备好两样必不可少的东西：\n" +
-                "\n" +
-                "　　1、要有一个用来测试的公众号。\n" +
-                "\n" +
-                "　　2、用来调式代码的开发环境";
+            "\n" +
+            "　　1、要有一个用来测试的公众号。\n" +
+            "\n" +
+            "　　2、用来调式代码的开发环境";
         item.PicUrl = "http://images2015.cnblogs.com/blog/289233/201601/289233-20160121164317343-2145023644.png";
         item.Url = "http://www.cnblogs.com/xdp-gacl/p/5149171.html";
         String itemContent1 = buildSingleItem(item);
@@ -423,14 +462,14 @@ public class MessageHandlerUtil {
 
 
         String content = String.format("<xml>\n" +
-                "<ToUserName><![CDATA[%s]]></ToUserName>\n" +
-                "<FromUserName><![CDATA[%s]]></FromUserName>\n" +
-                "<CreateTime>%s</CreateTime>\n" +
-                "<MsgType><![CDATA[news]]></MsgType>\n" +
-                "<ArticleCount>%s</ArticleCount>\n" +
-                "<Articles>\n" + "%s" +
-                "</Articles>\n" +
-                "</xml> ", fromUserName, toUserName, getMessageCreateTime(), 2, itemContent1 + itemContent2);
+            "<ToUserName><![CDATA[%s]]></ToUserName>\n" +
+            "<FromUserName><![CDATA[%s]]></FromUserName>\n" +
+            "<CreateTime>%s</CreateTime>\n" +
+            "<MsgType><![CDATA[news]]></MsgType>\n" +
+            "<ArticleCount>%s</ArticleCount>\n" +
+            "<Articles>\n" + "%s" +
+            "</Articles>\n" +
+            "</xml> ", fromUserName, toUserName, getMessageCreateTime(), 2, itemContent1 + itemContent2);
         return content;
 
     }
@@ -443,11 +482,11 @@ public class MessageHandlerUtil {
      */
     private static String buildSingleItem(NewsItem item) {
         String itemContent = String.format("<item>\n" +
-                "<Title><![CDATA[%s]]></Title> \n" +
-                "<Description><![CDATA[%s]]></Description>\n" +
-                "<PicUrl><![CDATA[%s]]></PicUrl>\n" +
-                "<Url><![CDATA[%s]]></Url>\n" +
-                "</item>", item.Title, item.Description, item.PicUrl, item.Url);
+            "<Title><![CDATA[%s]]></Title> \n" +
+            "<Description><![CDATA[%s]]></Description>\n" +
+            "<PicUrl><![CDATA[%s]]></PicUrl>\n" +
+            "<Url><![CDATA[%s]]></Url>\n" +
+            "</item>", item.Title, item.Description, item.PicUrl, item.Url);
         return itemContent;
     }
 

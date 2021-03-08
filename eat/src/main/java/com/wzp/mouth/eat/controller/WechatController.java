@@ -6,6 +6,7 @@ import com.wzp.mouth.eat.util.MessageHandlerUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,6 +34,9 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping(value = "/weChat")
 public class WechatController {
+
+    @Autowired
+    MessageHandlerUtil messageHandlerUtil;
 
     /**
      * Token可由开发者可以任意填写，用作生成签名（该Token会和接口URL中包含的Token进行比对，从而验证安全性）
@@ -113,7 +117,7 @@ public class WechatController {
      * 处理微信服务器发来的消息
      */
     @RequestMapping(value = "connect", method = RequestMethod.POST)
-    public String doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // TODO 接收、处理、响应由微信服务器转发的用户发送给公众帐号的消息
         // 将请求、响应的编码均设置为UTF-8（防止中文乱码）
         request.setCharacterEncoding("UTF-8");
@@ -123,8 +127,9 @@ public class WechatController {
         try {
             //解析微信发来的请求,将解析后的结果封装成Map返回
             Map<String, String> map = MessageHandlerUtil.parseXml(request);
-            log.info("开始构造响应消息");
-            responseMessage = MessageHandlerUtil.buildResponseMessage(map);
+            log.info("消息 用户id：{}，消息类型：{}，消息内容：{}",map.get("FromUserName"),map.get("MsgType"),map.get("Content"));
+
+            responseMessage = messageHandlerUtil.buildResponseMessage(map);
             log.info(responseMessage);
             if (responseMessage.equals("")) {
                 responseMessage = "未正确响应";
@@ -135,7 +140,7 @@ public class WechatController {
             responseMessage = "未正确响应";
         }
         //发送响应消息
-        return responseMessage;
+        response.getWriter().println(responseMessage);
     }
 
 }
