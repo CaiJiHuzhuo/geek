@@ -1,10 +1,15 @@
 package com.wzp.mouth.eat.controller;
 
-
-import com.wzp.mouth.eat.util.CheckUtil;
 import com.wzp.mouth.eat.util.MessageHandlerUtil;
 
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,16 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.Map;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 类名称: LoginController
@@ -63,6 +59,35 @@ public class WechatController {
             log.info("签名校验失败.");
         }
         return null;
+    }
+
+    /**
+     * 处理微信服务器发来的消息
+     */
+    @RequestMapping(value = "connect", method = RequestMethod.POST)
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // TODO 接收、处理、响应由微信服务器转发的用户发送给公众帐号的消息
+        // 将请求、响应的编码均设置为UTF-8（防止中文乱码）
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        log.info("请求进入");
+        String responseMessage;
+        try {
+            //解析微信发来的请求,将解析后的结果封装成Map返回
+            Map<String, String> map = MessageHandlerUtil.parseXml(request);
+
+            responseMessage = messageHandlerUtil.buildResponseMessage(map);
+            log.info(responseMessage);
+            if (responseMessage.equals("")) {
+                responseMessage = "未正确响应";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.info("发生异常：" + e.getMessage());
+            responseMessage = "未正确响应";
+        }
+        //发送响应消息
+        response.getWriter().println(responseMessage);
     }
 
     /**
@@ -113,34 +138,6 @@ public class WechatController {
         return "";
     }
 
-    /**
-     * 处理微信服务器发来的消息
-     */
-    @RequestMapping(value = "connect", method = RequestMethod.POST)
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // TODO 接收、处理、响应由微信服务器转发的用户发送给公众帐号的消息
-        // 将请求、响应的编码均设置为UTF-8（防止中文乱码）
-        request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8");
-        log.info("请求进入");
-        String responseMessage;
-        try {
-            //解析微信发来的请求,将解析后的结果封装成Map返回
-            Map<String, String> map = MessageHandlerUtil.parseXml(request);
-            log.info("消息 用户id：{}，消息类型：{}，消息内容：{}",map.get("FromUserName"),map.get("MsgType"),map.get("Content"));
 
-            responseMessage = messageHandlerUtil.buildResponseMessage(map);
-            log.info(responseMessage);
-            if (responseMessage.equals("")) {
-                responseMessage = "未正确响应";
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.info("发生异常：" + e.getMessage());
-            responseMessage = "未正确响应";
-        }
-        //发送响应消息
-        response.getWriter().println(responseMessage);
-    }
 
 }

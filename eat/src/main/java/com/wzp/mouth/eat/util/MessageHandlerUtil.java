@@ -3,7 +3,9 @@ package com.wzp.mouth.eat.util;
 
 
 import com.wzp.mouth.eat.Common.MessageType;
+import com.wzp.mouth.eat.dao.Message;
 import com.wzp.mouth.eat.service.EatService;
+import com.wzp.mouth.eat.service.MessageService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
@@ -14,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
@@ -33,6 +36,9 @@ public class MessageHandlerUtil {
 
     @Autowired
     EatService eatService;
+
+    @Autowired
+    MessageService messageService;
 
     /**
      * 解析微信发来的请求（XML）
@@ -119,6 +125,11 @@ public class MessageHandlerUtil {
 
     private Map<String, Boolean> fan = new HashMap<>();
 
+    //maybe
+    private Map<String, Message> msgCache = new HashMap<>();
+
+    //
+    private Map<String, Boolean> newMsgMap = new HashMap<>();
     /**
      * 接收到文本消息后处理
      *
@@ -153,7 +164,15 @@ public class MessageHandlerUtil {
             String fanText = "准备加饭：";
             responseMessage = buildTextMessage(map, fanText);
             break;
-
+        case "大乐透":
+            String dltText = "大乐透";
+            responseMessage = buildTextMessage(map, dltText);
+            break;
+        case "+1":
+            String messageText = "欢迎您留言：";
+            newMsgMap.put(openId,true);
+            responseMessage = buildTextMessage(map, messageText);
+            break;
         case "文本":
             String msgText =
                 "孤傲苍狼又要开始写博客总结了,欢迎朋友们访问我在博客园上面写的博客\n" + "<a href=\"http://www.cnblogs.com/xdp-gacl\">孤傲苍狼的博客</a>";
@@ -189,10 +208,20 @@ public class MessageHandlerUtil {
             break;
         default:
             Boolean isExist = fan.get(openId);
+            Boolean isMsg = newMsgMap.get(openId);
             if (isExist!=null && isExist) {
-                eatService.insertMenu(openId, content.split(" ")[0], content.split(" ")[1]);
-                responseMessage = buildTextMessage(map, "添加" + content.split(" ")[0] + "成功！");
-            } else {
+                String[] s = content.split(" ");
+                eatService.insertMenu(openId, s[0], s.length > 1 ? s[1]:"10");
+                responseMessage = buildTextMessage(map, "添加" + s[0] + "成功！");
+            } else if(isMsg != null && isMsg){
+                Message oldMessage = msgCache.get(openId);
+                oldMessage.setCreateTime(System.currentTimeMillis()+"");
+                oldMessage.setMessage(content);
+                messageService.insert(oldMessage);
+                responseMessage = buildTextMessage(map, "添加留言：" + content + "成功！");
+                newMsgMap.put(openId,false);
+            }
+            else{
                 responseMessage = buildWelcomeTextMessage(map);
             }
 
@@ -241,7 +270,7 @@ public class MessageHandlerUtil {
                     "<Content><![CDATA[%s]]></Content>" +
                 "</xml>",
                 fromUserName, toUserName, getMessageCreateTime(),
-                "感谢您关注我的个人公众号，请回复如下关键词来使用公众号提供的服务：\n干饭\n饭单\n加饭");
+                "感谢您关注我的个人公众号，请回复如下关键词来使用公众号提供的服务：\n干饭\n饭单\n加饭\n发送定位留言");
         return responseMessageXml;
     }
 
@@ -553,12 +582,30 @@ public class MessageHandlerUtil {
      * @param map
      * @return
      */
-    private static String handleLocationMessage(Map<String, String> map) {
+    private String handleLocationMessage(Map<String, String> map) {
         String latitude = map.get("Location_X");  //纬度
         String longitude = map.get("Location_Y");  //经度
         String label = map.get("Label");  //地理位置精度
-        String result = String.format("纬度：%s\n经度：%s\n地理位置：%s", latitude, longitude, label);
-        return buildTextMessage(map, result);
+        String fromUserName = map.get("FromUserName");
+        String createTime = map.get("CreateTime");
+
+        Message initMessage = new Message(latitude,longitude,label,fromUserName,createTime);
+
+        msgCache.put(fromUserName,initMessage);
+
+        List<Message> messages = messageService.selectMessage(latitude.substring(0,5), longitude.substring(0,5), label);
+
+        StringBuilder sb = new StringBuilder();
+        if (messages == null || messages.isEmpty()) {
+            sb.append("地理位置：").append(label).append(",暂无留言。\n");
+        }else {
+            for (Message message: messages) {
+                sb.append(DateFormatUtils.format(Long.parseLong(message.getCreateTime()), "yyyy-MM-dd HH:mm:ss")).
+                    append(": ").append(message.getMessage()).append("\n");
+            }
+        }
+        sb.append("留言请先发送+1，然后再发送留言内容。");
+        return buildTextMessage(map, sb.toString());
     }
 
     /**

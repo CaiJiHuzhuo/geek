@@ -24,9 +24,9 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  * @version V1.0
  * @since 2021-02-01 09:39
  */
-//@EnableAspectJAutoProxy
-//@Aspect
-//@Configuration
+@EnableAspectJAutoProxy
+@Aspect
+@Configuration
 public class AopConfig {
 
     @After("execution(public * com.wzp.study.LearnSpring.beanFactory.MyTestBean.test())")

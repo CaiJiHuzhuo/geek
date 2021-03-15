@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wzp.mouth.eat.mapper.MessageMapper">
+
+
+    <resultMap id="messageMap" type="com.wzp.mouth.eat.dao.Message">
+        <result property="id" column="id" />
+        <result property="LocationX" column="Location_X" />
+        <result property="LocationY" column="Location_Y" />
+        <result property="label" column="label"/>
+        <result property="userName" column="user_name" />
+        <result property="createTime" column="create_time"/>
+        <result property="message" column="message"/>
+    </resultMap>
+
+
+    <select id="selectMessage"  resultMap="messageMap">
+        select * from message WHERE Location_X like '%${LocationX}%' and Location_Y like '%${LocationY}%' and label= #{label};
+    </select>
+
+
+    <insert id="insert" parameterType="com.wzp.mouth.eat.dao.Message">
+        insert into message(Location_X,Location_Y,label,user_name,create_time,message) VALUES (#{LocationX},#{LocationY},#{label},#{userName},#{createTime},#{message})
+    </insert>
+</mapper>
