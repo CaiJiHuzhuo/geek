@@ -144,6 +144,10 @@ public class MessageHandlerUtil {
         String openId = map.get("FromUserName");
 
         switch (content) {
+        case "船票":
+            String chuangpiaoText = "https://mars.nasa.gov/participate/send-your-name/mars2020/（如果自己尝试失败或者无法提交登记船票的小伙伴，可以添加微信wzp9724，小编可以免费帮大家登记！）";
+            responseMessage = buildTextMessage(map, chuangpiaoText);
+            break;
         case "干饭":
             fan.put(openId, false);
             String restaurantText = eatService.getFoodRestaurant(openId);
@@ -270,7 +274,7 @@ public class MessageHandlerUtil {
                     "<Content><![CDATA[%s]]></Content>" +
                 "</xml>",
                 fromUserName, toUserName, getMessageCreateTime(),
-                "感谢您关注我的个人公众号，请回复如下关键词来使用公众号提供的服务：\n干饭\n饭单\n加饭\n发送定位留言");
+                "感谢您关注我的个人公众号，请回复如下关键词来使用公众号提供的服务：\n发送”船票“，获取NASA火星船票注册地址！\n发送当前定位，获取当地的留言信息，随时随地留下回忆！");
         return responseMessageXml;
     }
 
