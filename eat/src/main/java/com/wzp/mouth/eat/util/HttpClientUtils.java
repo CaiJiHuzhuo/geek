@@ -7,7 +7,13 @@
  */
 package com.wzp.mouth.eat.util;
 
+import com.sun.tools.internal.ws.wsdl.document.Output;
+
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.util.Base64;
 import java.util.Map;
@@ -114,6 +120,60 @@ public class HttpClientUtils {
             restResult.setMessage(content);
 
             return restResult;
+        } finally {
+            // 释放资源
+            if (response != null) {
+                try {
+                    response.close();
+                } catch (IOException e) {
+                    log.error("请求response资源关闭失败");
+                }
+            }
+            //关闭连接
+            httpGet.releaseConnection();
+        }
+
+    }
+
+    /**
+     * @param uri
+     * @param params
+     * @return
+     */
+    public static byte[] getPicture(String uri, Map<String, String> params,String userName) throws Exception {
+
+        CloseableHttpClient httpClient = getConnection();
+        URIBuilder uriTemp = new URIBuilder(uri);
+        if (params != null && !params.isEmpty()) {
+            Set<Map.Entry<String, String>> entries = params.entrySet();
+            for (Map.Entry<String, String> entry : entries) {
+                String head = entry.getKey();
+                String param = entry.getValue();
+                uriTemp.addParameter(head, param);
+            }
+        }
+
+        URI uriResult = uriTemp.build();
+
+        // 创建Get请求
+
+        HttpGet httpGet = new HttpGet(uriResult);
+
+        httpGet.setHeader("Content-Type", "application/json;charset=utf8");
+
+        CloseableHttpResponse response = null;
+        try {
+            response = httpClient.execute(httpGet);
+            InputStream restResult = response.getEntity().getContent();
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            FileOutputStream os = new FileOutputStream("/usr/wzp/eat/picture/"+userName);
+            byte[] buffer = new byte[4096];
+            int n = 0;
+            while (-1 != (n = restResult.read(buffer))) {
+                output.write(buffer, 0, n);
+                os.write(buffer, 0, n);
+            }
+            return output.toByteArray();
         } finally {
             // 释放资源
             if (response != null) {

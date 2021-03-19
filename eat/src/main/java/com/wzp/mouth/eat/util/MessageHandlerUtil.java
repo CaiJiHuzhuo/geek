@@ -2,12 +2,20 @@ package com.wzp.mouth.eat.util;
 
 
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.wzp.mouth.eat.Common.MessageType;
+import com.wzp.mouth.eat.Common.Status;
+import com.wzp.mouth.eat.Common.StatusManager;
 import com.wzp.mouth.eat.dao.Message;
+import com.wzp.mouth.eat.face.Face;
 import com.wzp.mouth.eat.service.EatService;
 import com.wzp.mouth.eat.service.MessageService;
 
 import javax.servlet.http.HttpServletRequest;
+
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -77,7 +85,7 @@ public class MessageHandlerUtil {
      * @param map 封装了解析结果的Map
      * @return responseMessage(响应消息)
      */
-    public String buildResponseMessage(Map map) {
+    public String buildResponseMessage(Map map) throws Exception {
         //响应消息
         String responseMessage = "";
         //得到消息类型
@@ -144,6 +152,16 @@ public class MessageHandlerUtil {
         String openId = map.get("FromUserName");
 
         switch (content) {
+        case "皮肤管理":
+            String skinText = "拍照或上传图片: ";
+            StatusManager.STATUSMAP.put(openId,Status.SKINMANAGEMENT);
+            responseMessage = buildTextMessage(map, skinText);
+            break;
+        case "颜值打分":
+            String faceText = "拍照或上传图片: ";
+            StatusManager.STATUSMAP.put(openId,Status.FACESCORE);
+            responseMessage = buildTextMessage(map, faceText);
+            break;
         case "船票":
             String chuangpiaoText = "https://mars.nasa.gov/participate/send-your-name/mars2020/（如果自己尝试失败或者无法提交登记船票的小伙伴，可以添加微信wzp9724，小编可以免费帮大家登记！）";
             responseMessage = buildTextMessage(map, chuangpiaoText);
@@ -158,7 +176,6 @@ public class MessageHandlerUtil {
             String menuText = eatService.getAllFoodRestaurant(openId);
             responseMessage = buildTextMessage(map, menuText);
             break;
-
         case "加饭":
             Boolean exist = fan.get(openId);
             if (exist == null || !exist) {
@@ -213,6 +230,7 @@ public class MessageHandlerUtil {
         default:
             Boolean isExist = fan.get(openId);
             Boolean isMsg = newMsgMap.get(openId);
+
             if (isExist!=null && isExist) {
                 String[] s = content.split(" ");
                 eatService.insertMenu(openId, s[0], s.length > 1 ? s[1]:"10");
@@ -274,7 +292,7 @@ public class MessageHandlerUtil {
                     "<Content><![CDATA[%s]]></Content>" +
                 "</xml>",
                 fromUserName, toUserName, getMessageCreateTime(),
-                "感谢您关注我的个人公众号，请回复如下关键词来使用公众号提供的服务：\n发送”船票“，获取NASA火星船票注册地址！\n发送当前定位，获取当地的留言信息，随时随地留下回忆！");
+                "感谢您关注我的个人公众号，请回复如下关键词来使用公众号提供的服务：\n发送”船票“，获取NASA火星船票注册地址！\n发送当前定位，获取当地的留言信息，随时随地留下回忆！\n发送”颜值打分“，看看你的美貌值多少分！");
         return responseMessageXml;
     }
 
@@ -530,13 +548,62 @@ public class MessageHandlerUtil {
      * @param map
      * @return
      */
-    private static String handleImageMessage(Map<String, String> map) {
+    private static String handleImageMessage(Map<String, String> map) throws Exception {
         String picUrl = map.get("PicUrl");
-        String mediaId = map.get("MediaId");
-        System.out.print("picUrl:" + picUrl);
-        System.out.print("mediaId:" + mediaId);
-        String result = String.format("已收到您发来的图片，图片Url为：%s\n图片素材Id为：%s", picUrl, mediaId);
-        return buildTextMessage(map, result);
+        String fromUserName = map.get("FromUserName");
+        byte[] bytes = HttpClientUtils.getPicture(picUrl, null,fromUserName);
+
+        StringBuilder result = new StringBuilder();
+        Status status = StatusManager.STATUSMAP.get(fromUserName);
+        if (status == null) {
+            result.append("您的照片很美，但是您想干什么呢？");
+        } else {
+            switch (status) {
+            case FACESCORE:
+                face(bytes, result);
+                StatusManager.STATUSMAP.remove(fromUserName);
+                break;
+            case SKINMANAGEMENT:
+                break;
+            }
+        }
+        return buildTextMessage(map, result.toString());
+    }
+
+
+    private static void face(byte[] bytes, StringBuilder result) {
+        String picture = FaceTest.face(bytes);
+        JSONObject faceResult = (JSONObject)JSON.parse(picture);
+        Object error = faceResult.get("error_message");
+        if (error != null){
+            result.append(error);
+        } else {
+            JSONArray faces = faceResult.getJSONArray("faces");
+            if (faces.isEmpty()){
+                result.append("未检测到人脸！");
+            }else{
+                Object f1= faces.get(0);
+                String s = JSON.toJSONString(f1);
+                Face face = JSON.parseObject(s, Face.class);
+                result.append("性别: "+face.getAttributes().getGender().getValue()+"\n");
+                result.append("年龄: "+face.getAttributes().getAge().getValue()+"\n");
+                result.append("情绪: \n");
+                result.append("  愤怒: "+face.getAttributes().getEmotion().getAnger() +"\n");
+                result.append("  厌恶: "+face.getAttributes().getEmotion().getDisgust() +"\n");
+                result.append("  恐惧: "+face.getAttributes().getEmotion().getFear() +"\n");
+                result.append("  高兴: "+face.getAttributes().getEmotion().getHappiness() +"\n");
+                result.append("  平静: "+face.getAttributes().getEmotion().getNeutral() +"\n");
+                result.append("  伤心: "+face.getAttributes().getEmotion().getSadness() +"\n");
+                result.append("  惊讶: "+face.getAttributes().getEmotion().getSurprise() +"\n");
+                result.append("颜值: "+("Male".equals(face.getAttributes().getGender().getValue()) ? face.getAttributes().getBeauty().getMale_score(): face.getAttributes().getBeauty().getFemale_score())+"\n");
+                result.append("面部特征: \n");
+                result.append("  健康: "+face.getAttributes().getSkinstatus().getHealth() +"\n");
+                result.append("  色斑: "+face.getAttributes().getSkinstatus().getStain() +"\n");
+                result.append("  青春痘: "+face.getAttributes().getSkinstatus().getAcne() +"\n");
+                result.append("  黑眼圈: "+face.getAttributes().getSkinstatus().getDark_circle() +"\n");
+            }
+
+        }
     }
 
     /**
