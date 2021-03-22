@@ -221,11 +221,14 @@ public class MessageHandlerUtil {
             responseMessage = buildMusicMessage(map, music);
             break;
         case "视频":
-            Video video = new Video();
-            video.mediaId = "GqmIGpLu41rtwaY7WCVtJAL3ZbslzKiuLEXfWIKYDnHXGObH1CBH71xtgrGwyCa3";
-            video.title = "小苹果";
-            video.description = "小苹果搞笑视频";
-            responseMessage = buildVideoMessage(map, video);
+            String zmText =
+                "吾辈当自强！\n" + "<a href=\"http://wzpzyp.link:8181/WebChat/static/video.html\">中美高层阿拉斯加会晤完整视频</a>";
+            responseMessage = buildTextMessage(map, zmText);
+//            Video video = new Video();
+//            video.mediaId = "GqmIGpLu41rtwaY7WCVtJAL3ZbslzKiuLEXfWIKYDnHXGObH1CBH71xtgrGwyCa3";
+//            video.title = "小苹果";
+//            video.description = "小苹果搞笑视频";
+//            responseMessage = buildVideoMessage(map, video);
             break;
         default:
             Boolean isExist = fan.get(openId);
@@ -292,7 +295,7 @@ public class MessageHandlerUtil {
                     "<Content><![CDATA[%s]]></Content>" +
                 "</xml>",
                 fromUserName, toUserName, getMessageCreateTime(),
-                "感谢您关注我的个人公众号，请回复如下关键词来使用公众号提供的服务：\n发送”船票“，获取NASA火星船票注册地址！\n发送当前定位，获取当地的留言信息，随时随地留下回忆！\n发送”颜值打分“，看看你的美貌值多少分！");
+                "感谢您关注我的个人公众号，请回复如下关键词来使用公众号提供的服务：\n发送”船票“，获取NASA火星船票注册地址！\n发送当前定位，获取当地的留言信息，随时随地留下回忆！\n发送”颜值打分“，看看你的美貌值多少分！\n发送”视频“，获取中美阿拉斯加会晤完整视频！");
         return responseMessageXml;
     }
 
