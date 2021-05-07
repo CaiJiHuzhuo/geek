@@ -22,15 +22,15 @@ import java.util.concurrent.TimeUnit;
  * @version V1.0
  * @since 2021-04-21 11:50
  */
-public class testDate {
+public class TestDate {
 
     public static void main(String[] args) {
 
         int ran = new Random().nextInt(10);
         System.out.println(ran);
 
-//        oneSimpleDate();
-//                newSimpleDate();
+        //        oneSimpleDate();
+        //                newSimpleDate();
     }
 
     private static void oneSimpleDate() {
@@ -80,9 +80,9 @@ public class testDate {
         String dateString = new SimpleDateFormat(pattern).format(date);
         Date parseDate = simpleDateFormat.parse(dateString);
         String dateString2 = simpleDateFormat.format(parseDate);
-//        if (!dateString.equals(dateString2)) {
-            System.out.println(dateString.equals(dateString2));
-//        }
+        //        if (!dateString.equals(dateString2)) {
+        System.out.println(dateString.equals(dateString2));
+        //        }
     }
 
 }
