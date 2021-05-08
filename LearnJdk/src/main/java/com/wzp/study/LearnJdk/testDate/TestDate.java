@@ -29,8 +29,8 @@ public class TestDate {
         int ran = new Random().nextInt(10);
         System.out.println(ran);
 
-        //        oneSimpleDate();
-        //                newSimpleDate();
+        // oneSimpleDate();
+        // newSimpleDate();
     }
 
     private static void oneSimpleDate() {
