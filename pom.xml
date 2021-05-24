@@ -18,6 +18,7 @@
         <module>LearnEjob</module>
         <module>DesignPatterns</module>
         <module>netty</module>
+        <module>kk-melot-darkLaunch-module</module>
     </modules>
 
     <dependencies>
