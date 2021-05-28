@@ -55,6 +55,20 @@ class EatApplicationTests {
 
 
 	@Test
+	public void testAlibaba() throws Exception {
+
+		while(true) {
+			RestResult restResult = HttpClientUtils.get("http://localhost:34769/test/getId", null);
+
+			System.out.println(restResult.getMessage());
+
+			Thread.sleep(500);
+		}
+	}
+
+
+
+	@Test
 	public void test100000(){
 //		List<Lottery> select = lotteryMapper.select();
 //		for (int i = 0;i<1;i++) {
